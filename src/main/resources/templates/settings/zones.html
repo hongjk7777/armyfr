@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tags</title>
+    <th:block th:replace="fragments.html :: head"></th:block>
+    <!--    <link rel="stylesheet" href="css/tagify.scss">-->
+    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css" />
+<!--    <link rel="stylesheet" src="/css/region.css" />-->
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    <style>
+        .tagify__dropdown.extra-properties .tagify__dropdown__item > img{
+            display: inline-block;
+            vertical-align: middle;
+            height: 20px;
+            transform: scale(.75);
+            margin-right: 5px;
+            border-radius: 2px;
+            transition: .12s ease-out;
+        }
+
+        .tagify__dropdown.extra-properties .tagify__dropdown__item--active > img,
+        .tagify__dropdown.extra-properties .tagify__dropdown__item:hover > img{
+            transform: none;
+            margin-right: 12px;
+        }
+
+        .tagify.countries .tagify__input{ min-width:175px; }
+
+        .tagify.countries tag{ white-space:nowrap; }
+        .tagify.countries tag img{
+            display: inline-block;
+            height: 16px;
+            margin-right: 3px;
+            border-radius: 2px;
+        }
+    </style>
+
+    <style>
+        .container {
+            max-width: 100%;
+        }
+
+        // 추가
+        .tagify--outside{
+            border: 0;
+            padding: 0;
+            margin: 0;
+		}
+    </style>
+    <!--    <script src="resources/static/js/tagify.js"></script>-->
+</head>
+<body>
+<div th:replace="fragments.html :: navbar">상단바</div>
+
+<div class="container-fluid">
+
+
+
+    <div class="row mt-5 justify-content-center">
+        <div class="col-2">
+            <div th:replace="fragments.html :: settings-menu(currentMenu='zones')"></div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <h2 class="col-sm-12">활동 지역</h2>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        주로 활동하는 지역을 입력해주세요. 해당 지역의 모임이 생기면 알림을 받을 수 있습니다.
+                        태그를 입력하고 콤마(,) 또는 엔터를 입력하세요.
+                    </div>
+                    <div id="whitelist" th:text="${whitelist}" hidden></div>
+                    <input name='zones' class='tagify--outside' th:value="${#strings.listJoin(zones, ',')}"
+                           placeholder="활동지역을 선택해주세요">
+<!--                    th:value="${#strings.listJoin(tags, ',')}"-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript" th:inline="javascript">
+    $(function () {
+        const csrfToken = /*[[${_csrf.token}]]*/ null;
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        })
+    });
+</script>
+
+<script type="application/javascript">
+    $(function () { //화면 다 뜨면 시작
+
+
+    var tagify = new Tagify(document.querySelector('input[name=zones]'), {
+    delimiters : '\,',
+    templates : {
+        tag : function(tagData){
+            try{
+            return `<tag title='${tagData.value}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>
+                            <span class='tagify__tag-text'>${tagData.value}</span>
+                        </div>
+                    </tag>`
+            }
+            catch(err){}
+        },
+    },
+    enforceWhitelist : true,
+    whitelist : JSON.parse(document.querySelector("#whitelist").textContent),
+    dropdown : {
+        enabled: 1, // suggest tags after a single character input
+        classname : 'extra-properties' // custom class for the suggestions dropdown
+    } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
+})
+
+function tagRequest(url, cityKrName){
+  $.ajax({
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    method: "POST",
+    url: "/settings/zones" + url,
+    data: JSON.stringify({'cityKrName' : cityKrName})
+  }).done(function (data, status) {
+    console.log("${data} and status is ${status}");
+  });
+}
+
+function onAdd(e) {
+  tagRequest("/add", e.detail.data.value);
+}
+
+function onRemove(e) {
+  tagRequest("/remove", e.detail.data.value);
+}
+
+tagify.on('click', function(e){
+    console.log(e.detail);
+});
+
+tagify.on('remove', onRemove);
+
+
+tagify.on('add', onAdd);
+
+// add a class to Tagify's input element
+tagify.DOM.input.classList.add('form-control');
+// re-place Tagify's input element outside of the element (tagify.DOM.scope), just before it
+tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+
+// add the first 2 tags and makes them readonly
+//var tagsToAdd = tagify.settings.whitelist.slice(0, 2)
+//tagify.addTags(tagsToAdd)
+
+
+
+
+    });
+</script>
+<!--//autoComplete-->
+<!--$("#tags").autocomplete({-->
+<!--source : function( request, response) {-->
+<!--$.ajax({-->
+<!--type: 'get',-->
+<!--url: "/settings/tags/autoComplete",-->
+<!--datatype: "json",-->
+<!--success: function(data) {-->
+<!--response(-->
+<!--$.map(data, function(item) {-->
+<!--return {-->
+<!--label: item.title,-->
+<!--value: item.title-->
+<!--}-->
+<!--})-->
+<!--);-->
+<!--}-->
+
+
+<!--});-->
+<!--},-->
+<!--minLength: 1,-->
+<!--autoFocus: true,-->
+<!--classes: {-->
+<!--"ui-autocomplete": "highlight"-->
+<!--},-->
+<!--delay: 500,-->
+<!--select : function(event, ui){-->
+
+<!--}-->
+<!--});-->
+
+
+<!--<script src="/js/tagify.js"></script>-->
+<!--<script src="resources/static/js/tagify.min.js"></script>-->
+
+</body>
+</html>

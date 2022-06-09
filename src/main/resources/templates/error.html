@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace ="fragments.html :: head">
+    <!--    <meta charset="UTF-8">-->
+    <!--    <title>메인</title>-->
+    <!--    <th:block th:replace="fragments/config :: configFragment"/>-->
+</head>
+
+<style>
+.category-list .col-xs-6, .category-list .col-sm-4, .category-list .col-md-3, .category-list .col-lg-3 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+</style>
+
+<body class="bg-light">
+
+
+<div th:replace="fragments.html :: navbar">상단바</div>
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1>다모임</h1>
+        <p class="lead text-muted">
+            로그인 후 사용해주세요.<br/>
+        </p>
+        <p>
+            <a th:href="@{/}" class="btn btn-primary my-2">첫 페이지로 이동</a>
+        </p>
+    </div>
+</section>
+
+
+
+<script type="text/javascript" src="/js/bootstrap.js"></script>
+</body>
+</html>

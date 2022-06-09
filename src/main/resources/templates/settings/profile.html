@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>제목</title>
+    <th:block th:replace="fragments.html :: head"></th:block>
+<!--    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+<!--    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>-->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="/css/avatar.css">
+</head>
+
+<body>
+<div th:replace="fragments.html :: navbar">상단바</div>
+
+<div class="container-fluid">
+
+<!--    <article class="signup_box">-->
+<!--        <div class="title">내 정보</div>-->
+
+    <div >
+        <div class="row mt-5 justify-content-center" >
+            <div class="col-2">
+                <div th:replace="fragments.html :: settings-menu (currentMenu='profile')"></div>
+            </div>
+
+            <div class="col-8 justify-content-center" >
+                <div class="row">
+                    <h2 class="col-sm-12" th:text="${profileDto.name}">whiteship</h2>
+                </div>
+
+                <form action="#" th:action="@{/settings/profile}"
+                      th:object="${profileDto}" method="post" enctype="multipart/form-data" >
+                    <div class="row mt-3" th:fragment="profile-form">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label th:for="name">닉네임</label>
+                                <input th:field="*{name}"  class="form-control" text="${member.name}"
+                                       placeholder="닉네임을 입력하세요" aria-describedby="nameHelp" required>
+                                <small id="nameHelp" class="form-text text-muted">
+                                    2자 이상 8자 이하로 입력해주세요.
+                                </small>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                    형식에 맞게 입력해주세요
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label th:for="introduce">소갯말</label>
+                                <input th:field="*{introduce}"  text="${member.introduce}" class="form-control"
+                                       placeholder="소갯말을 입력하세요" aria-describedby="introduceHelp" required>
+                                <small id="introduceHelp" class="form-text text-muted">
+                                    2자 이상 8자 이하로 입력해주세요.
+                                </small>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('introduce')}" th:errors="*{introduce}">
+                                    형식에 맞게 입력해주세요
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label th:for="belong">소속</label>
+                                <input th:field="*{belong}" text="${member.belong}" class="form-control"
+                                       placeholder="소속을 입력하세요" aria-describedby="belongHelp" required>
+                                <small id="belongHelp" class="form-text text-muted">
+                                    2자 이상 8자 이하로 입력해주세요.
+                                </small>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('belong')}" th:errors="*{belong}">
+                                    형식에 맞게 입력해주세요
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label th:for="actingArea">활동 지역</label>
+                                <input th:field="*{actingArea}" text="${member.actingArea}" class="form-control"
+                                       placeholder="활동 지역을 입력하세요" aria-describedby="actingAreaHelp" required>
+                                <small id="actingAreaHelp" class="form-text text-muted">
+                                    2자 이상 8자 이하로 입력해주세요.
+                                </small>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('actingArea')}" th:errors="*{actingArea}">
+                                    형식에 맞게 입력해주세요
+                                </small>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="main-img-preview">
+<!--                                    <img class="thumbnail img-preview" th:if="${}" src="https://placehold.it/80x80" title="Preview Logo">-->
+<!--                                    <img class="thumbnail img-preview" th:src="${fileDto.filePath}" title="Preview Logo">-->
+                                </div>
+                                <div class="input-group mt-4">
+                                    <input id="fakeUploadLogo" class="form-control fake-shadow" placeholder="Choose File" disabled="disabled">
+                                    <div class="input-group-btn">
+                                        <div class="fileUpload btn btn-danger fake-shadow">
+                                            <span><i class="glyphicon glyphicon-upload"></i> Upload Logo</span>
+                                            <input id="logo-id" name="logo" type="file" th:field="*{files}" class="attachment_upload">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="help-block">* Upload your profile logo.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group ml-3 mt-2">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+
+
+                    </div>
+                </form>
+
+
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!--        <form role="form" th:action="@{/settings/profile}" th:object="${profileDto}" method="post"-->
+<!--              enctype="multipart/form-data">-->
+
+
+<!--            <div class="signup">-->
+<!--                <label th:for="name" class="signup_label">이름</label><br>-->
+<!--                <input text="${member.name}" th:field="*{name}" class="signup_input" placeholder="이름을 입력하세요"-->
+<!--                       th:class="${#fields.hasErrors('name')}? 'signup_input fieldError' : 'signup_input'">-->
+<!--            </div>-->
+
+<!--            <div class="signup_fail">-->
+<!--                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect name</p>-->
+<!--            </div>-->
+
+<!--            <div>-->
+<!--                <p class="signup_default" th:if="${!#fields.hasErrors('name')}"></p>-->
+<!--            </div>-->
+
+<!--            <div class="signup">-->
+<!--                <label th:for="introduce" class="signup_label">한 줄 소개</label><br>-->
+<!--                <input text="${member.introduce}" th:field="*{introduce}" class="signup_input" placeholder="소갯말을 입력하세요"-->
+<!--                       th:class="${#fields.hasErrors('introduce')}? 'signup_input fieldError' : 'signup_input'">-->
+<!--            </div>-->
+<!--            <div class="signup_fail">-->
+<!--                <p th:if="${#fields.hasErrors('introduce')}" th:errors="*{introduce}">Incorrect introduce</p>-->
+<!--            </div>-->
+
+<!--            <div>-->
+<!--                <p class="signup_default" th:if="${!#fields.hasErrors('introduce')}" ></p>-->
+<!--            </div>-->
+
+<!--            <div>-->
+<!--                <label th:for="regionStr" class="signup_label">지역</label><br>-->
+<!--                <select required th:field="*{regionStr}" class="signup_select">-->
+
+<!--                    <option value="seoul" th:selected="${profileDto.regionStr=='seoul'}">서울특별시</option>-->
+<!--                    <option value="incheon" th:selected="${profileDto.regionStr=='incheon'}">인천광역시</option>-->
+<!--                    <option value="daejeon" th:selected="${profileDto.regionStr=='daejeon'}">대전광역시</option>-->
+<!--                    <option value="gwangju" th:selected="${profileDto.regionStr=='gwangju'}">광주광역시</option>-->
+<!--                    <option value="daegu" th:selected="${profileDto.regionStr=='daegu'}">대구광역시</option>-->
+<!--                    <option value="ulsan" th:selected="${profileDto.regionStr=='ulsan'}">울산광역시</option>-->
+<!--                    <option value="busan" th:selected="${profileDto.regionStr=='busan'}">부산광역시</option>-->
+<!--                    <option value="gyunggi" th:selected="${profileDto.regionStr=='gyunggi'}">경기도</option>-->
+<!--                    <option value="gangwon" th:selected="${profileDto.regionStr=='gangwon'}">강원도</option>-->
+<!--                    <option value="chungcheong_s" th:selected="${profileDto.regionStr=='chungcheong_s'}">충청북도</option>-->
+<!--                    <option value="chungcheong_n" th:selected="${profileDto.regionStr=='chungcheong_n'}">충청남도</option>-->
+<!--                    <option value="jeonla_s" th:selected="${profileDto.regionStr=='jeonla_s'}">전라북도</option>-->
+<!--                    <option value="jeonla_n" th:selected="${profileDto.regionStr=='jeonla_n'}">전라남도</option>-->
+<!--                    <option value="gyungsang_s" th:selected="${profileDto.regionStr=='gyungsang_s'}">경상북도</option>-->
+<!--                    <option value="gyungsang_n" th:selected="${profileDto.regionStr=='gyungsang_n'}">경상남도</option>-->
+<!--                    <option value="jeju" th:selected="${profileDto.regionStr=='jeju'}">제주도</option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--&lt;!&ndash;            <div class="signup">&ndash;&gt;-->
+<!--&lt;!&ndash;                <label th:for="files" class="signup_label">이름</label><br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="image">&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+
+
+
+<!--            <div class="signup" >-->
+<!--                <label th:for="files" class="signup_label">프로필 사진</label><br>-->
+
+<!--                <p><img th:src="${fileDto.filePath}" id="imageFile" alt="프로필 사진" width="200" height="200"/></p>-->
+<!--&lt;!&ndash;                <button type="button" id="file_btn">첨부파일</button><span id="span">등록된 첨부파일이 없습니다.</span>&ndash;&gt;-->
+<!--                <div>-->
+<!--                    <div id="image_container"></div>-->
+<!--                    <script>-->
+<!--                    function setThumbnail(event) {-->
+<!--                        var reader = new FileReader();-->
+<!--                        reader.onload = function(event) {-->
+<!--                            var img = document.createElement("img");-->
+<!--                            img.setAttribute("src", event.target.result);-->
+<!--                            document.querySelector("div#image_container").appendChild(img);-->
+<!--                        };-->
+<!--                        document.getElementById('imageFile').hidden = true;-->
+<!--                        reader.readAsDataURL(event.target.files[0]);-->
+<!--                    }-->
+
+
+
+<!--                </script>-->
+<!--                    <input type="file" th:field="*{files}" accept="image/png, image/jpeg"-->
+<!--                           class="form-control" max="1"-->
+<!--                           width="100" height="100" onchange="setThumbnail(event);">-->
+<!--&lt;!&ndash;                    onchange="fileUpload(this);"&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span id="error_file" class="error_txt"></span>&ndash;&gt;-->
+
+<!--                </div>-->
+<!--            </div>-->
+
+
+
+<!--            &lt;!&ndash;            <div class="signup">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <label th:for="city" class="signup_label">도시</label><br>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <input type="text" th:field="*{city}" class="signup_input" placeholder="도시를 입력하세요">&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+
+<!--            &lt;!&ndash;            <div class="signup">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <label th:for="street" class="signup_label">거리</label><br>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <input type="text" th:field="*{street}" class="signup_input"&ndash;&gt;-->
+<!--            &lt;!&ndash;                       placeholder="거리를 입력하세요">&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+
+<!--            &lt;!&ndash;            <div class="signup">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <label th:for="zipcode" class="signup_label">우편번호</label><br>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <input type="text" th:field="*{zipcode}" class="signup_input"&ndash;&gt;-->
+<!--            &lt;!&ndash;                       placeholder="우편번호를 입력하세요">&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+
+<!--            <button type="submit" class="signup_button">Submit</button>-->
+<!--        </form>-->
+<!--    </article>-->
+</div>
+
+
+<script src="/js/avatar.js"></script>
+<!--</form>-->
+</body>
+</html>

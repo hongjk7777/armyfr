@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tags</title>
+    <th:block th:replace="fragments.html :: head"></th:block>
+<!--    <link rel="stylesheet" href="css/tagify.scss">-->
+    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css" />
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <style>
+        .container {
+            max-width: 100%;
+        }
+
+        // 추가
+        .tagify--outside{
+            border: 0;
+            padding: 0;
+            margin: 0;
+		}
+    </style>
+<!--    <script src="resources/static/js/tagify.js"></script>-->
+</head>
+<body>
+<div th:replace="fragments.html :: navbar">상단바</div>
+
+<div class="container-fluid">
+
+
+
+    <div class="row mt-5 justify-content-center">
+        <div class="col-2">
+            <div th:replace="fragments.html :: settings-menu(currentMenu='tags')"></div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <h2 class="col-sm-12">관심있는 모임 주제</h2>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        참여하고 싶은 모임 주제를 입력해 주세요. 해당 주제의 모임이 생기면 받을 수 있습니다.
+                        태그를 입력하고 콤마(,) 또는 엔터를 입력하세요.
+                    </div>
+                    <div id="whitelist" th:text="${whitelist}" hidden></div>
+                    <input id="tags" type="text" name="tags" th:value="${#strings.listJoin(tags, ',')}"
+                           class="tagify-outside" aria-describedby="tagHelp" placeholder="관심있는 주제를 입력해주세요."/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript" th:inline="javascript">
+    $(function () {
+        const csrfToken = /*[[${_csrf.token}]]*/ null;
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        })
+    });
+</script>
+
+<script type="application/javascript">
+    $(function () { //화면 다 뜨면 시작
+        function tagRequest(url, tagTitle) {
+            $.ajax({
+                dataType: "json",
+                autocomplete: {
+                    enabled: true,
+                    rightKey: true,
+                },
+                contentType: "application/json; charset=utf-8",
+                method: "POST",
+                url: "/settings/tags" + url,
+                data: JSON.stringify({'tagTitle' : tagTitle})
+            }).done(function (data, status) {
+                console.log("${data} and status is ${status}");
+            });
+        }
+
+        function onAdd(e) {
+            tagRequest("/add", e.detail.data.value);
+        }
+
+        function onRemove(e) {
+            tagRequest("/remove", e.detail.data.value);
+        }
+
+        const tagInput = document.querySelector("#tags");
+        const tagify = new Tagify(tagInput, {
+           pattern: /^.{0,20}$/,
+           whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
+           dropdown : {
+               enabled: 1,      // suggest tags after a single character input
+           }  // map tags
+        });
+
+        tagify.on("add", onAdd);
+        tagify.on("remove", onRemove);
+
+        // add a class to Tagify's input element
+        tagify.DOM.input.classList.add('form-control');
+        // re-place Tagify's input element outside of the element (tagify.DOM.scope), just before it
+        tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+
+
+
+
+
+    });
+</script>
+<!--//autoComplete-->
+<!--$("#tags").autocomplete({-->
+<!--source : function( request, response) {-->
+<!--$.ajax({-->
+<!--type: 'get',-->
+<!--url: "/settings/tags/autoComplete",-->
+<!--datatype: "json",-->
+<!--success: function(data) {-->
+<!--response(-->
+<!--$.map(data, function(item) {-->
+<!--return {-->
+<!--label: item.title,-->
+<!--value: item.title-->
+<!--}-->
+<!--})-->
+<!--);-->
+<!--}-->
+
+
+<!--});-->
+<!--},-->
+<!--minLength: 1,-->
+<!--autoFocus: true,-->
+<!--classes: {-->
+<!--"ui-autocomplete": "highlight"-->
+<!--},-->
+<!--delay: 500,-->
+<!--select : function(event, ui){-->
+
+<!--}-->
+<!--});-->
+
+
+<!--<script src="/js/tagify.js"></script>-->
+<!--<script src="resources/static/js/tagify.min.js"></script>-->
+
+</body>
+</html>

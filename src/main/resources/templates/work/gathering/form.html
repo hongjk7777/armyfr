@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>신청하기</title>
+    <th:block th:replace="fragments.html :: head"></th:block>
+    <!--    <link rel="stylesheet" href="css/tagify.scss">-->
+    <!--    <link rel="stylesheet" src="/css/region.css" />-->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+<div th:replace="fragments.html :: navbar">상단바</div>
+<div class="container">
+    <div th:replace="fragments.html::gathering-form(mode='new', action='/work/' +${work.path} + '/new-gathering')"></div>
+</div>
+
+<script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+<script th:replace="fragments.html::form-validation"></script>
+<script th:replace="fragments.html::editor-script"></script>
+
+</body>\
+
+</html>
